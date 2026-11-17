@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whistly – catch the moment before it's gone</title>
+<meta name="description" content="Whistly is a free app for elusive, cool moments – a rainbow, the northern lights, a sundog on a cold morning – and for the people who want to find them. Built in Winnipeg, for thing finders everywhere.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Whistly – catch the moment before it's gone">
+<meta property="og:description" content="A free app for elusive, cool moments and the people who want to find them. Built in Winnipeg, for thing finders everywhere.">
+<!-- After you publish, add a preview image and the page address so shared links look right:
+<meta property="og:image" content="https://YOUR-SITE/preview.jpg">
+<meta property="og:url" content="https://YOUR-SITE/">
+-->
+<meta name="theme-color" content="#eef3f8">
+<style>
+  :root {
+    --frost: #eef3f8;
+    --snow: #ffffff;
+    --ink: #14263a;
+    --dusk: #4a5b6e;
+    --line: #d3dee9;
+    --signal: #c2185b;
+    --signal-deep: #9d1048;
+    --aurora: #0b7f72;
+    --sundog: #f2b544;
+    --font: system-ui, -apple-system, "Segoe UI", "Avenir Next", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+  body {
+    margin: 0;
+    background: var(--frost);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, video { max-width: 100%; display: block; }
+  a { color: var(--signal-deep); text-underline-offset: 0.18em; }
+  a:hover { color: var(--signal); }
+  :focus-visible { outline: 3px solid var(--aurora); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { width: min(1040px, 100% - 2.5rem); margin-inline: auto; }
+  .skip {
+    position: absolute; left: 1rem; top: -4rem; z-index: 20;
+    background: var(--ink); color: #fff; padding: 0.6rem 1rem; border-radius: 8px;
+  }
+  .skip:focus { top: 1rem; }
+
+  h1, h2, h3 { margin: 0; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(2.5rem, 5.4vw + 0.9rem, 4.4rem); letter-spacing: -0.035em; }
+  h2 { font-size: clamp(1.75rem, 2.4vw + 1rem, 2.5rem); }
+  h3 { font-size: 1.2rem; letter-spacing: -0.01em; }
+  p { margin: 0 0 1.1em; max-width: var(--measure); }
+  .lede { font-size: 1.25rem; line-height: 1.55; color: var(--dusk); }
+
+  section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
+  section + section { border-top: 1px solid var(--line); }
+  .section-head { margin-bottom: 1.75rem; }
+  .section-head h2 { max-width: 20ch; }
+
+  /* Header */
+  .site { position: sticky; top: 0; z-index: 10; background: rgba(238, 243, 248, 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .site .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 3.5rem; gap: 1rem; }
+  .wordmark { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
+  .wordmark::before { content: ""; display: inline-block; width: 0.6rem; height: 0.6rem; margin-right: 0.45rem; border-radius: 50%; background: var(--signal); vertical-align: 0.08em; }
+  .site nav { display: flex; gap: 1.4rem; align-items: center; }
+  .site nav a { color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+  .site nav a:hover { text-decoration: underline; }
+  @media (max-width: 720px) { .site nav a:not(.nav-download) { display: none; } }
+
+  /* Buttons */
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1.75rem; }
+  .btn {
+    display: inline-block; padding: 0.8rem 1.35rem; border-radius: 999px;
+    background: var(--signal); color: #fff; font-weight: 700; text-decoration: none;
+    border: 2px solid var(--signal);
+  }
+  .btn:hover { background: var(--signal-deep); border-color: var(--signal-deep); color: #fff; }
+  .btn.quiet { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn.quiet:hover { background: var(--ink); color: #fff; }
+  .nav-download { color: #fff !important; background: var(--signal); padding: 0.4rem 0.95rem; border-radius: 999px; }
+  .nav-download:hover { background: var(--signal-deep); text-decoration: none !important; }
+
+  /* Hero */
+  .hero { padding-top: clamp(2.5rem, 6vw, 4.5rem); background: linear-gradient(180deg, #dfeaf5 0%, var(--frost) 100%); }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero h1 { max-width: 12ch; margin-bottom: 1.2rem; }
+  .hero .lede { max-width: 34ch; }
+  .fineprint { margin-top: 1rem; font-size: 0.95rem; color: var(--dusk); }
+  @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } .hero h1 { max-width: 14ch; } }
+
+  .alerts { display: grid; gap: 0.8rem; }
+  .alerts figcaption { font-size: 0.88rem; color: var(--dusk); margin-top: 0.4rem; }
+  .alert {
+    background: var(--snow); border: 1px solid var(--line); border-radius: 16px;
+    padding: 0.95rem 1.1rem; display: grid; grid-template-columns: auto 1fr; gap: 0.8rem; align-items: start;
+    box-shadow: 0 10px 28px -14px rgba(20, 38, 58, 0.35);
+    opacity: 0; transform: translateY(14px);
+    animation: arrive 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+  .alert:nth-child(1) { animation-delay: 0.35s; }
+  .alert:nth-child(2) { animation-delay: 1.15s; margin-left: 1.2rem; }
+  .alert:nth-child(3) { animation-delay: 1.95s; }
+  .alert .dot { width: 0.85rem; height: 0.85rem; border-radius: 50%; margin-top: 0.4rem; background: var(--aurora); }
+  .alert:nth-child(2) .dot { background: var(--sundog); }
+  .alert:nth-child(3) .dot { background: var(--signal); }
+  .alert strong { display: block; font-size: 1.02rem; }
+  .alert span { font-size: 0.92rem; color: var(--dusk); }
+  @keyframes arrive { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .alert { animation: none; opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* The gap */
+  .gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .gap-grid h2 { max-width: 16ch; }
+  @media (max-width: 820px) { .gap-grid { grid-template-columns: 1fr; } }
+
+  /* Steps */
+  .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .steps li { counter-increment: step; border-top: 3px solid var(--aurora); padding-top: 1rem; }
+  .steps li::before { content: counter(step); display: block; font-weight: 800; font-size: 2.4rem; line-height: 1; color: var(--aurora); margin-bottom: 0.6rem; }
+  .steps h3 { margin-bottom: 0.5rem; }
+  .steps p { margin: 0; font-size: 1rem; }
+  @media (max-width: 820px) { .steps { grid-template-columns: 1fr; } }
+  .assurances { margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .assurances p { margin: 0; padding-left: 1rem; border-left: 3px solid var(--sundog); }
+  @media (max-width: 720px) { .assurances { grid-template-columns: 1fr; } }
+
+  /* What people share */
+  .finds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .finds h3 { margin-bottom: 0.6rem; }
+  .finds ul { list-style: none; margin: 0; padding: 0; }
+  .finds li { padding: 0.45rem 0; border-top: 1px solid var(--line); }
+  .finds-note { margin-top: 1.75rem; color: var(--dusk); }
+  @media (max-width: 820px) { .finds { grid-template-columns: 1fr; } }
+
+  /* Comparison */
+  .compare { width: 100%; border-collapse: collapse; background: var(--snow); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .compare th, .compare td { text-align: left; vertical-align: top; padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .compare thead th { background: var(--ink); color: #fff; font-size: 0.95rem; }
+  .compare tbody th { font-weight: 700; width: 22%; }
+  .compare tbody tr:last-child > * { border-bottom: 0; }
+  @media (max-width: 680px) {
+    .compare thead { display: none; }
+    .compare, .compare tbody, .compare tr, .compare th, .compare td { display: block; }
+    .compare tr { border-bottom: 1px solid var(--line); padding: 0.4rem 0; }
+    .compare tbody th { width: auto; padding-bottom: 0; border: 0; }
+    .compare td { border: 0; padding-top: 0.3rem; padding-bottom: 0.3rem; }
+    .compare td::before { content: attr(data-label) ": "; font-weight: 700; color: var(--dusk); }
+  }
+  .trust { margin-top: 1.5rem; font-weight: 700; }
+
+  /* Story */
+  .story { display: grid; grid-template-columns: 280px 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .portrait { position: sticky; top: 5.5rem; }
+  .portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 20px; border: 1px solid var(--line); background: #dfeaf5; }
+  .portrait.no-photo img { display: none; }
+  .portrait.no-photo::before {
+    content: "AK"; display: grid; place-items: center; aspect-ratio: 4 / 5; border-radius: 20px;
+    background: #dfeaf5; color: var(--dusk); font-weight: 800; font-size: 3.5rem; letter-spacing: -0.03em;
+  }
+  .portrait figcaption { margin-top: 0.7rem; font-size: 0.92rem; color: var(--dusk); }
+  .story h2 { margin-bottom: 1.5rem; max-width: 18ch; }
+  .story h3 { margin: 2rem 0 0.7rem; }
+  .deer { padding-left: 1rem; border-left: 3px solid var(--aurora); }
+  @media (max-width: 820px) { .story { grid-template-columns: 1fr; } .portrait { position: static; max-width: 260px; } }
+
+  /* Where it stands */
+  .stand p { max-width: 64ch; }
+  .stand .ask { font-size: 1.3rem; font-weight: 700; line-height: 1.4; max-width: 34ch; margin-bottom: 1.2rem; }
+
+  /* Demo */
+  .demo .embed { width: 100%; max-width: 760px; aspect-ratio: 16 / 9; border-radius: 16px; border: 1px solid var(--line); background: #000; overflow: hidden; margin-bottom: 1.25rem; }
+  .demo .embed iframe { width: 100%; height: 100%; border: 0; }
+
+  /* Footer */
+  footer { padding: 2.5rem 0 3.5rem; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--dusk); }
+  footer .wrap { display: grid; gap: 0.9rem; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; }
+  footer p { margin: 0; max-width: 70ch; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="wordmark" href="#top">Whistly</a>
+    <nav aria-label="Page sections">
+      <a href="#how">How it works</a>
+      <a href="#story">My story</a>
+      <a href="#demo">Demo</a>
+      <a class="nav-download" href="#download">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div>
+        <h1>Catch the moment before it's gone.</h1>
+        <p class="lede">Whistly is a free app for elusive, cool moments &ndash; a rainbow, the northern lights, a sundog on a cold morning &ndash; and for the people who want to find them. Built in Winnipeg, for thing finders everywhere.</p>
+        <div class="actions" id="download">
+          <a class="btn" href="https://apps.apple.com/us/app/whistly/id6786967009">Download for iPhone</a>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=ca.softsignal.whistly">Download for Android</a>
+          <a class="btn quiet" href="#demo">Watch the demo</a>
+        </div>
+        <p class="fineprint">Free to use, with no ads.</p>
+      </div>
+
+      <figure class="alerts" aria-label="Examples of notifications from Whistly" style="margin:0">
+        <div class="alert"><span class="dot" aria-hidden="true"></span><div><strong>Northern lights</strong><span>Posted just now, near you</span></div></div>
+        <div class="alert"><span class="dot" aria-hidden="true"></span><div><strong>Sundog</strong><span>Posted 2 minutes ago, near you</span></div></div>
+        <div class="alert"><span class="dot" aria-hidden="true"></span><div><strong>Rainbow</strong><span>Posted 5 minutes ago, near you</span></div></div>
+        <figcaption>Examples of what a Whistly notification looks like.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- THE GAP -->
+  <section id="why">
+    <div class="wrap gap-grid">
+      <div>
+        <h2>How do you find out about spontaneous things while they're still happening?</h2>
+      </div>
+      <div>
+        <p class="lede">Whistly is the answer to that question.</p>
+        <p>Traditional social media is cluttered. A lot of the time it's hours later when someone posts a photo, and only if you happen to be scrolling at the right time and the algorithm shows it to you.</p>
+        <p>I keep missing things I wished I had caught on time. So I'm building communities of thing finders, starting in Winnipeg, where we can find out faster about the things we're interested in, and help each other.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head"><h2>How Whistly works</h2></div>
+      <ol class="steps">
+        <li>
+          <h3>Subscribe to what you care about</h3>
+          <p>Pick the kinds of moments and the places you want to hear about: Aurora, Rainbow, Moon Halo, Sundog, Tornado, Hail, Wild Animals, Mushrooms, Nature Finds, Safety Events and many others. Anyone can subscribe to any area, big or small, near or far, anywhere in the world.</p>
+        </li>
+        <li>
+          <h3>Someone nearby spots it and posts a signal</h3>
+          <p>When you see something fleeting and unpredictable, you post a quick signal with a photo. You can only post from where you are physically standing, or very near your actual location, so the pins are real.</p>
+        </li>
+        <li>
+          <h3>You get the alert while it's happening</h3>
+          <p>Everyone subscribed to that kind of event in that area gets a targeted push notification, so people can catch it instantly, before it's gone.</p>
+        </li>
+      </ol>
+      <div class="assurances">
+        <p>Posts can be anonymous, so sharing a sighting never means sharing who you are.</p>
+        <p>You don't need friends or followers, and you don't wait to be approved into separate community groups.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT PEOPLE SHARE -->
+  <section id="finds">
+    <div class="wrap">
+      <div class="section-head"><h2>What people find and share</h2></div>
+      <div class="finds">
+        <div>
+          <h3>In the sky</h3>
+          <ul>
+            <li>Rainbows</li>
+            <li>The northern lights</li>
+            <li>A sundog on a cold morning</li>
+            <li>Moon halos</li>
+            <li>Unusual clouds</li>
+            <li>Tornado and hail sightings</li>
+          </ul>
+        </div>
+        <div>
+          <h3>In nature</h3>
+          <ul>
+            <li>Wildlife in the neighbourhood</li>
+            <li>Backyard bird sightings</li>
+            <li>In summer: a berry patch, a mushroom field, a harvest share</li>
+            <li>A fossil or a painted rock someone left for you to find</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Around town</h3>
+          <ul>
+            <li>A garage sale map</li>
+            <li>A free couch on a curb near you</li>
+            <li>Other cool moments worth sharing</li>
+            <li>Safety events</li>
+          </ul>
+        </div>
+      </div>
+      <p class="finds-note">It's built for things we can't plan to see, for anyone who wants real-time community alerts that actually matter to them.</p>
+    </div>
+  </section>
+
+  <!-- WHY DIFFERENT -->
+  <section id="different">
+    <div class="wrap">
+      <div class="section-head"><h2>Unlike traditional social media</h2></div>
+      <table class="compare">
+        <thead>
+          <tr><th scope="col">&nbsp;</th><th scope="col">Traditional social media</th><th scope="col">Whistly</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">What you follow</th>
+            <td data-label="Traditional social media">People and pages</td>
+            <td data-label="Whistly">Kinds of moments in specific areas, near you or worldwide</td>
+          </tr>
+          <tr>
+            <th scope="row">How you hear</th>
+            <td data-label="Traditional social media">Whatever the algorithm shows you, when you happen to scroll</td>
+            <td data-label="Whistly">A push notification for what you chose</td>
+          </tr>
+          <tr>
+            <th scope="row">How you join in</th>
+            <td data-label="Traditional social media">Friends, followers, and waiting to be approved into groups</td>
+            <td data-label="Whistly">Subscribe and talk with your whole community instantly</td>
+          </tr>
+          <tr>
+            <th scope="row">When</th>
+            <td data-label="Traditional social media">Often hours later</td>
+            <td data-label="Whistly">While it's still happening</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="trust">If you see a notification from Whistly, you know it's for a good reason.</p>
+    </div>
+  </section>
+
+  <!-- MY STORY -->
+  <section id="story">
+    <div class="wrap story">
+      <figure class="portrait" style="margin:0">
+        <img id="portrait" src="https://lh3.googleusercontent.com/pw/AP1GczPjuulPJYLXfTzEy0TxS-Xt-7-Myf7tiJSsBkKk9JawOWploYhOJzmRmOTp5FVb_vLuUKiq_LKVKvKLxFYjo9hWbMVd9Gc4pdsrpG2BE_tWku4B3CI3=w900" referrerpolicy="no-referrer" width="560" height="700" alt="Alex Kedelashvili, the developer behind Whistly">
+        <figcaption>Alex Kedelashvili, creator of Whistly</figcaption>
+      </figure>
+
+      <div>
+        <h2>Why I built Whistly</h2>
+        <p>A few years ago, when I came to Canada, I dreamed of seeing the northern lights, like many others do. I was surprised to discover how many locals haven't seen them, or have seen them only a handful of times. I started following some Facebook pages and realized it wasn't that uncommon for the northern lights to happen here. Catching them on time was the problem.</p>
+        <p>Facebook is a cluttered, noisy place. I don't know how many times I've opened it, seen an amazing aurora photo, and thought: &ldquo;Damn, I missed it again!&rdquo; &#128516;</p>
+        <p>Then I downloaded aurora forecast apps to see if conditions might be good. But I kept going out in very cold weather only to find that it was too cloudy, or the moon was brighter than I wanted. It wasn't easy to find the right moment, and I ended up torn between the fear of missing out and the fear of losing my job the next day &#128515;</p>
+        <p>This story is probably similar to many others, but this is where mine starts. The northern lights inspired Whistly, an app that helps local communities of sky-watchers, wildlife photographers, nature lovers and all sorts of thing finders connect with each other.</p>
+        <p>Other apps are great for analyzing data and forecasting conditions. I wanted something different: a quick alert from someone nearby who is actually seeing it right now. Whistly fills the gap that exists when we rely on data alone.</p>
+
+        <h3>It's not only for event chasers</h3>
+        <p class="deer">A while back, we noticed a deer trapped in a tomato cage. We reached out to the city, but not knowing how fast they would respond, we also tried to share the word in local community groups. Even as a group member, getting a post approved takes so long that the information becomes irrelevant. After a conversation, an officer freed the deer, and we edited the post to say she was free &ndash; but even that was published a week late. That's not ideal when you're trying to share fleeting, spontaneous events.</p>
+        <p>Whistly is built for instant, real-time communication when something worth sharing is happening. It's one app for all thing finders around the globe. Nature photographers and event chasers are the community I'm building it for, and Winnipeg, where the original idea came from, is where it starts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHERE IT STANDS -->
+  <section id="join" class="stand">
+    <div class="wrap">
+      <div class="section-head"><h2>Where Whistly is today</h2></div>
+      <p>It's very early, with very few signals so far. For now I'm looking for local community volunteers, starting in Winnipeg but wherever you are, to try the idea with me: to explore what works, what doesn't, and where it helps people most to catch things they would otherwise miss.</p>
+      <p>The app is free and has no ads, and I'm a solo developer.</p>
+      <p class="ask">If this sounds interesting for your community, download it, check it out, and tell me what you think.</p>
+      <p>You can send feedback, questions or any inquiry through Help &amp; Support inside the app.</p>
+      <div class="actions">
+        <a class="btn" href="https://apps.apple.com/us/app/whistly/id6786967009">Download for iPhone</a>
+        <a class="btn" href="https://play.google.com/store/apps/details?id=ca.softsignal.whistly">Download for Android</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section id="demo" class="demo">
+    <div class="wrap">
+      <div class="section-head"><h2>See it in action</h2></div>
+      <div id="demo-embed" class="embed" hidden></div>
+      <p>A short screen recording of Whistly in use.</p>
+      <div class="actions" style="margin-top:0">
+        <a class="btn" href="https://photos.app.goo.gl/p9wuz8UmjR2gQebP6" rel="noopener">Watch the demo recording</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav aria-label="Legal">
+      <a href="https://softsignalcanada.github.io/privacy/terms.html">Terms of service</a>
+      <a href="https://softsignalcanada.github.io/privacy/">Privacy policy</a>
+    </nav>
+    <p>Whistly is built in Winnipeg, Manitoba by Alex Kedelashvili and operated under Soft Signal Canada. &copy; 2026 Soft Signal Canada.</p>
+  </div>
+</footer>
+
+<script>
+  /* ---------- Settings you can change ----------
+     VIDEO_EMBED_URL: Google Photos cannot be embedded in a page. To play the demo
+     right here, upload it to YouTube as "Unlisted" and paste the embed address:
+       https://www.youtube-nocookie.com/embed/YOUR_VIDEO_ID
+     or share a Google Drive video with "Anyone with the link" and paste:
+       https://drive.google.com/file/d/YOUR_FILE_ID/preview
+     Leave it empty to show only the "Watch the demo recording" button. */
+  var VIDEO_EMBED_URL = "";
+
+  // Portrait: try the full-size picture first, then the preview picture that
+  // Google Photos itself publishes for the shared link, then show initials.
+  (function () {
+    var base = "https://lh3.googleusercontent.com/pw/AP1GczPjuulPJYLXfTzEy0TxS-Xt-7-Myf7tiJSsBkKk9JawOWploYhOJzmRmOTp5FVb_vLuUKiq_LKVKvKLxFYjo9hWbMVd9Gc4pdsrpG2BE_tWku4B3CI3";
+    var attempts = [base + "=w600-h315-p-k"];
+    var photo = document.getElementById("portrait");
+    var frame = photo.closest(".portrait");
+    function useFallback() { frame.classList.add("no-photo"); }
+    function next() {
+      var url = attempts.shift();
+      if (url) { photo.src = url; } else { useFallback(); }
+    }
+    photo.addEventListener("error", next);
+    if (photo.complete && photo.naturalWidth === 0) next();
+  })();
+
+  // Demo player (only when VIDEO_EMBED_URL is set)
+  (function () {
+    if (!VIDEO_EMBED_URL) return;
+    var box = document.getElementById("demo-embed");
+    var frame = document.createElement("iframe");
+    frame.src = VIDEO_EMBED_URL;
+    frame.title = "Whistly demo";
+    frame.allow = "fullscreen; picture-in-picture";
+    frame.loading = "lazy";
+    frame.referrerPolicy = "no-referrer";
+    box.appendChild(frame);
+    box.hidden = false;
+  })();
+</script>
+</body>
+</html>
